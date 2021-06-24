@@ -31,6 +31,7 @@
   export let activeTab: router.LoadedOrgTab;
   export let gnosisSafeAddress: string;
   export let address: string;
+  export let name: string | undefined = undefined;
   export let members: org.Member[];
   export let threshold: number;
 
@@ -96,6 +97,7 @@
     <OrgHeader
       slot="left"
       orgAddress={address}
+      {name}
       {gnosisSafeAddress}
       {threshold} />
     <div slot="right" style="display: flex">

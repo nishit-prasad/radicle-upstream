@@ -37,7 +37,7 @@ import ModalAnchorProject from "ui/Modal/Org/AnchorProject.svelte";
 
 export type { MemberResponse, Org };
 
-const ORG_POLL_INTERVAL_MS = 2000;
+const ORG_POLL_INTERVAL_MS = 20000;
 
 // Update the org data for the sidebar store every
 // `ORG_POLL_INTERVAL_MS` milliseconds.
@@ -214,7 +214,15 @@ async function fetchOrgs(): Promise<void> {
     });
   }
 
-  const orgs = await getOrgs(w.connected.account.address);
+  let orgs = await getOrgs(w.connected.account.address);
+
+  orgs = await Promise.all(
+    orgs.map(async org => {
+      org.name = await fetchOrgName(org.id);
+      return org;
+    })
+  );
+
   const sortedOrgs = lodash.sortBy(orgs, org => org.timestamp);
   orgSidebarStore.set(sortedOrgs);
 }
@@ -225,6 +233,13 @@ interface OrgWithSafe {
   gnosisSafeAddress: string;
   members: Member[];
   threshold: number;
+}
+
+export async function fetchOrgName(
+  orgAddress: string
+): Promise<string | undefined> {
+  const walletStore = svelteStore.get(wallet.store);
+  return await walletStore.provider.lookupAddress(orgAddress);
 }
 
 export async function fetchOrg(orgAddress: string): Promise<OrgWithSafe> {

@@ -14,6 +14,7 @@
   export let orgAddress: string;
   export let gnosisSafeAddress: string;
   export let threshold: number;
+  export let name: string | undefined = undefined;
 </script>
 
 <style>
@@ -47,7 +48,7 @@
 
   <div class="metadata">
     <h1 data-cy="entity-name" class="typo-overflow-ellipsis name">
-      {style.ellipsed(orgAddress)}
+      {name ? name.replace(/\.radicle\.eth/, "") : style.ellipsed(orgAddress)}
     </h1>
     <div class="row">
       <Icon.Gnosis />{style.ellipsed(gnosisSafeAddress)}

@@ -78,6 +78,7 @@ export type LoadedOrgTab =
 interface OrgLoadedRoute {
   type: "org";
   address: string;
+  name: string | undefined;
   gnosisSafeAddress: string;
   activeTab: LoadedOrgTab;
   threshold: number;
@@ -107,15 +108,17 @@ export async function loadRoute(route: Route): Promise<LoadedRoute> {
 
 async function loadOrgRoute(route: OrgRoute): Promise<OrgLoadedRoute> {
   if (route.activeTab === "projects") {
-    const [projectCount, orgWithSafe] = await Promise.all([
+    const [projectCount, orgWithSafe, orgName] = await Promise.all([
       org.getProjectCount(),
       org.fetchOrg(route.address),
+      org.fetchOrgName(route.address),
     ]);
     const projectAnchors = await org.resolveProjectAnchors(orgWithSafe);
 
     return {
       type: "org",
       address: route.address,
+      name: orgName,
       gnosisSafeAddress: orgWithSafe.gnosisSafeAddress,
       members: orgWithSafe.members,
       threshold: orgWithSafe.threshold,
@@ -128,10 +131,14 @@ async function loadOrgRoute(route: OrgRoute): Promise<OrgLoadedRoute> {
       },
     };
   } else if (route.activeTab === "members") {
-    const orgScreen = await org.fetchOrg(route.address);
+    const [orgScreen, orgName] = await Promise.all([
+      org.fetchOrg(route.address),
+      org.fetchOrgName(route.address),
+    ]);
     return {
       type: "org",
       address: route.address,
+      name: orgName,
       gnosisSafeAddress: orgScreen.gnosisSafeAddress,
       members: orgScreen.members,
       threshold: orgScreen.threshold,

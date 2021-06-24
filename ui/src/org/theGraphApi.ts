@@ -79,6 +79,7 @@ export interface Org {
   owner: string;
   creator: string;
   timestamp: number;
+  name?: string;
 }
 
 async function getGnosisSafeWallets(walletOwnerAddress: string) {

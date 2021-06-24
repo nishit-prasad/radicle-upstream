@@ -133,6 +133,7 @@
     <Org
       activeTab={$activeRouteStore.activeTab}
       address={$activeRouteStore.address}
+      name={$activeRouteStore.name}
       gnosisSafeAddress={$activeRouteStore.gnosisSafeAddress}
       threshold={$activeRouteStore.threshold}
       members={$activeRouteStore.members} />
